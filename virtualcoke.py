@@ -8,8 +8,13 @@ from datetime import datetime
 import socket, select, errno
 
 # for emulator code
+import os
 import sys
 import string
+
+# Ascii Coke Logo
+# by Normand Veilleux
+# in cokelogo.txt
 
 class ContainedMultiSelect(npyscreen.BoxTitle):
     _contained_widget = npyscreen.TitleMultiSelect
@@ -47,6 +52,16 @@ class VirtualCoke(npyscreen.Form):
 
     def create(self, *args, **keywords):
         super(VirtualCoke, self).create(*args, **keywords)
+
+	logofile = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "cokelogo.txt")
+	logotext = open(logofile).read()
+	self.cokelogo = []
+
+	cly = 1
+	for line in logotext.splitlines():
+		widget = self.add(npyscreen.FixedText, value=line, editable = False, rely = cly)
+		cly = cly + 1
+		self.cokelogo.append(widget)
 
 #        self.textdisplay = self.add(npyscreen.FixedText, value=self.parentApp.textdisplay, editable=False, relx=9)
 #        self.textdisplay.important = True
