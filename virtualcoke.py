@@ -14,9 +14,9 @@ import string
 class ContainedMultiSelect(npyscreen.BoxTitle):
     _contained_widget = npyscreen.TitleMultiSelect
 
-class SnackButtonPress(npyscreen.MiniButtonPress):
+class CokeButtonPress(npyscreen.MiniButtonPress):
     def __init__(self, screen, when_pressed_function=None, when_pressed_callback=None, *args, **keywords):
-	super(SnackButtonPress, self).__init__(screen, *args, **keywords)
+	super(CokeButtonPress, self).__init__(screen, *args, **keywords)
 	self.when_pressed_callback = when_pressed_callback
 
     def whenPressed(self,key=None):
@@ -36,7 +36,7 @@ class Switches:
             self.switch_input &= ~0x20
 
 
-class VirtualSnack(npyscreen.Form):
+class VirtualCoke(npyscreen.Form):
 
     def while_waiting(self):
         self.date_widget.value = datetime.now().ctime()
@@ -46,7 +46,7 @@ class VirtualSnack(npyscreen.Form):
         self.display()
 
     def create(self, *args, **keywords):
-        super(VirtualSnack, self).create(*args, **keywords)
+        super(VirtualCoke, self).create(*args, **keywords)
 
         self.textdisplay = self.add(npyscreen.FixedText, value=self.parentApp.textdisplay, editable=False, relx=9)
         self.textdisplay.important = True
@@ -57,11 +57,11 @@ class VirtualSnack(npyscreen.Form):
 	for keypad in range(0,10):
 		kpx = ((keypad % 4) * 6 ) + 3
 		kpy = int(keypad / 4) + 4
-		widget = self.add(SnackButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
+		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
 		self.kpbuttons.append(widget)
 		self.add_handlers({"%d"%keypad: widget.whenPressed})
 		
-	self.reset=self.add(SnackButtonPress,name="RESET",  relx = kpx + 7, rely = kpy, when_pressed_callback=self.parentApp.when_reset_pressed)
+	self.reset=self.add(CokeButtonPress,name="RESET",  relx = kpx + 7, rely = kpy, when_pressed_callback=self.parentApp.when_reset_pressed)
 	self.add_handlers({"R": self.reset.whenPressed})
 	self.add_handlers({"r": self.reset.whenPressed})
 
@@ -69,12 +69,12 @@ class VirtualSnack(npyscreen.Form):
 
 	self.dip = self.add(npyscreen.MultiSelect, name = "DIP Switch", max_width=10, rely =3, relx = 35, max_height=10, value = [], values = ["DIP1", "DIP2", "DIP3","DIP4","DIP5","DIP6","DIP7","DIP8"], scroll_exit=True)
 
-	self.nickel=self.add(SnackButtonPress,name="0.05", rely= 3, relx=50)
-	self.dime=self.add(SnackButtonPress,name="0.10", relx=50)
-	self.quarter=self.add(SnackButtonPress,name="0.25", relx=50)
-	self.dollar=self.add(SnackButtonPress,name="1.00", relx=50)
+	self.nickel=self.add(CokeButtonPress,name="0.05", rely= 3, relx=50)
+	self.dime=self.add(CokeButtonPress,name="0.10", relx=50)
+	self.quarter=self.add(CokeButtonPress,name="0.25", relx=50)
+	self.dollar=self.add(CokeButtonPress,name="1.00", relx=50)
 
-	self.mode=self.add(SnackButtonPress,name="MODE", relx=50)
+	self.mode=self.add(CokeButtonPress,name="MODE", relx=50)
 
 	
 	self.date_widget = self.add(npyscreen.FixedText, value=datetime.now().ctime(), editable=False, rely=18)
@@ -89,7 +89,7 @@ class VirtualSnack(npyscreen.Form):
         self.editing = False
 
 
-class VirtualSnackApp(npyscreen.NPSAppManaged):
+class VirtualCokeApp(npyscreen.NPSAppManaged):
     keypress_timeout_default = 1
 
     def onStart(self):
@@ -99,7 +99,7 @@ class VirtualSnackApp(npyscreen.NPSAppManaged):
         self.switches = Switches()
 	self.textdisplay = "*5N4CK0RZ*"
 
-	self.F = self.addForm("MAIN", VirtualSnack, name="Virtual Snack")
+	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke")
 	
 	# socket code
     	self.CONNECTION_LIST = []    # list of socket clients
@@ -131,7 +131,7 @@ class VirtualSnackApp(npyscreen.NPSAppManaged):
                 self.CONNECTION_LIST.append(sockfd)
                 self.received = "Client (%s, %s) connected" % addr
 
-		self.do_send("000 Virtual Snack is alive \n")
+		self.do_send("000 Virtual Coke is alive \n")
 		self.do_prompt()
                  
                 #Some incoming message from a client
@@ -161,7 +161,7 @@ class VirtualSnackApp(npyscreen.NPSAppManaged):
     def onCleanExit(self):
         self.server_socket.close()
     
-    # Snack Emulator comms below
+    # Coke Emulator comms below
     
     def do_send(self, data):
         # Get the list sockets which are ready to be written through select
@@ -213,7 +213,7 @@ class VirtualSnackApp(npyscreen.NPSAppManaged):
         keywords['widget'].value = False
 	self.F.display()
 
-    # Snack Emulator code below
+    # Coke Emulator code below
 
     def do_prompt(self):
         self.do_send("# ")
@@ -250,7 +250,7 @@ Commands starting with # are ignored (comments)
     def do_about(self):
         about = """
 
-The Virtual Vending^WSnack Machine Company
+The Virtual Vending^WCoke Machine Company
 
 Mark Tearle, October 2014
 """
@@ -316,5 +316,5 @@ Mark Tearle, October 2014
         self.do_prompt()
 
 if __name__ == "__main__":
-    App = VirtualSnackApp()
+    App = VirtualCokeApp()
     App.run()
