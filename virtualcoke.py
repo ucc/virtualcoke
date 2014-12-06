@@ -42,39 +42,39 @@ class VirtualCoke(npyscreen.Form):
         self.date_widget.value = datetime.now().ctime()
 	self.sentfield.value = self.parentApp.sent
 	self.receivedfield.value = self.parentApp.received
-	self.textdisplay.value = self.parentApp.textdisplay
+#	self.textdisplay.value = self.parentApp.textdisplay
         self.display()
 
     def create(self, *args, **keywords):
         super(VirtualCoke, self).create(*args, **keywords)
 
-        self.textdisplay = self.add(npyscreen.FixedText, value=self.parentApp.textdisplay, editable=False, relx=9)
-        self.textdisplay.important = True
+#        self.textdisplay = self.add(npyscreen.FixedText, value=self.parentApp.textdisplay, editable=False, relx=9)
+#        self.textdisplay.important = True
 	
-	self.kpbuttons = []
-	kpx = 1
-	kpy = 1
-	for keypad in range(0,10):
-		kpx = ((keypad % 4) * 6 ) + 3
-		kpy = int(keypad / 4) + 4
-		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
-		self.kpbuttons.append(widget)
-		self.add_handlers({"%d"%keypad: widget.whenPressed})
+#	self.kpbuttons = []
+#	kpx = 1
+#	kpy = 1
+#	for keypad in range(0,10):
+#		kpx = ((keypad % 4) * 6 ) + 3
+#		kpy = int(keypad / 4) + 4
+#		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
+#		self.kpbuttons.append(widget)
+#		self.add_handlers({"%d"%keypad: widget.whenPressed})
 		
-	self.reset=self.add(CokeButtonPress,name="RESET",  relx = kpx + 7, rely = kpy, when_pressed_callback=self.parentApp.when_reset_pressed)
-	self.add_handlers({"R": self.reset.whenPressed})
-	self.add_handlers({"r": self.reset.whenPressed})
+#	self.reset=self.add(CokeButtonPress,name="RESET",  relx = kpx + 7, rely = kpy, when_pressed_callback=self.parentApp.when_reset_pressed)
+#	self.add_handlers({"R": self.reset.whenPressed})
+#	self.add_handlers({"r": self.reset.whenPressed})
 
-	self.dip = self.add(npyscreen.MultiSelect, name = "Door", max_width=15, relx = 4, rely = 12, max_height=4, value = [], values = ["DOOR"], scroll_exit=True, value_changed_callback=self.parentApp.when_door_toggled)
+#	self.dip = self.add(npyscreen.MultiSelect, name = "Door", max_width=15, relx = 4, rely = 12, max_height=4, value = [], values = ["DOOR"], scroll_exit=True, value_changed_callback=self.parentApp.when_door_toggled)
 
-	self.dip = self.add(npyscreen.MultiSelect, name = "DIP Switch", max_width=10, rely =3, relx = 35, max_height=10, value = [], values = ["DIP1", "DIP2", "DIP3","DIP4","DIP5","DIP6","DIP7","DIP8"], scroll_exit=True)
+#	self.dip = self.add(npyscreen.MultiSelect, name = "DIP Switch", max_width=10, rely =3, relx = 35, max_height=10, value = [], values = ["DIP1", "DIP2", "DIP3","DIP4","DIP5","DIP6","DIP7","DIP8"], scroll_exit=True)
 
-	self.nickel=self.add(CokeButtonPress,name="0.05", rely= 3, relx=50)
-	self.dime=self.add(CokeButtonPress,name="0.10", relx=50)
-	self.quarter=self.add(CokeButtonPress,name="0.25", relx=50)
-	self.dollar=self.add(CokeButtonPress,name="1.00", relx=50)
+#	self.nickel=self.add(CokeButtonPress,name="0.05", rely= 3, relx=50)
+#	self.dime=self.add(CokeButtonPress,name="0.10", relx=50)
+#	self.quarter=self.add(CokeButtonPress,name="0.25", relx=50)
+#	self.dollar=self.add(CokeButtonPress,name="1.00", relx=50)
 
-	self.mode=self.add(CokeButtonPress,name="MODE", relx=50)
+#	self.mode=self.add(CokeButtonPress,name="MODE", relx=50)
 
 	
 	self.date_widget = self.add(npyscreen.FixedText, value=datetime.now().ctime(), editable=False, rely=18)
@@ -97,7 +97,7 @@ class VirtualCokeApp(npyscreen.NPSAppManaged):
         # vending machine password set here
         self.vendpw = "AAAAAAAAAAAAAAAA"
         self.switches = Switches()
-	self.textdisplay = "*5N4CK0RZ*"
+#	self.textdisplay = "*5N4CK0RZ*"
 
 	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke")
 	
@@ -272,7 +272,7 @@ Mark Tearle, October 2014
             self.do_send("100 Vend successful\n")
 
     def do_display(self,string):
-        self.textdisplay = "%-10.10s" % (string)
+#        self.textdisplay = "%-10.10s" % (string)
         self.do_send('300 Written\n')
 
     def do_beep(self,command):
