@@ -63,6 +63,47 @@ class VirtualCoke(npyscreen.Form):
 		cly = cly + 1
 		self.cokelogo.append(widget)
 
+	# LEDS
+	self.leds = []
+	lx = 1
+	ly = cly 
+	for led in range(0,7):
+		lx = ((7 * 7) + 3) - ( led * 7 )
+		widget = self.add(npyscreen.FixedText, value="[SOLD]", editable = False, relx = lx, rely = ly)
+		self.leds.append(widget)
+		#
+		# FIXME Hook up widgets and callbacks
+		#
+#		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
+#		self.add_handlers({"%d"%keypad: widget.whenPressed})
+		
+	# Buttons
+	self.buttons = []
+	bx = 1
+	by = ly + 1
+	for button in range(0,7):
+		bx = ((7 * 7) + 3) - ( button * 7 )
+		widget = self.add(npyscreen.FixedText, value=str(button), editable = False, relx = bx, rely = by)
+		self.buttons.append(widget)
+	for button in range(7,10):
+		bx = (8 * 7) + ((button - 6) * 3 ) + 3
+		widget = self.add(npyscreen.FixedText, value=str(button), editable = False, relx = bx, rely = by)
+		self.buttons.append(widget)
+		#
+		# FIXME Hook up widgets and callbacks
+		#
+#		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
+#		self.kpbuttons.append(widget)
+#		self.add_handlers({"%d"%keypad: widget.whenPressed})
+	# Manual
+	bx = bx + 3
+	widget = self.add(npyscreen.FixedText, value="M", editable = False, relx = bx, rely = by)
+	self.buttons.append(widget)
+	#
+	# FIXME Hook up widgets and callbacks
+	#
+
+
 #        self.textdisplay = self.add(npyscreen.FixedText, value=self.parentApp.textdisplay, editable=False, relx=9)
 #        self.textdisplay.important = True
 	
