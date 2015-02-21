@@ -5,7 +5,21 @@ from datetime import datetime
 # Incorporates code
 # from http://www.binarytides.com/python-socket-server-code-example/
 # Socket server in python using select function
-import socket, select, errno
+import socket
+import select
+import errno
+
+# Incorporates code from
+#Pymodbus Asynchronous Server Example
+
+#---------------------------------------------------------------------------# 
+# import the various server implementations
+#---------------------------------------------------------------------------# 
+from pymodbus.server.async import StartTcpServer
+
+from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSparseDataBlock
+from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext
+
 
 # for emulator code
 import os
@@ -15,6 +29,15 @@ import string
 # Ascii Coke Logo
 # by Normand Veilleux
 # in cokelogo.txt
+
+##---------------------------------------------------------------------------# 
+## configure the service logging
+##---------------------------------------------------------------------------# 
+import logging
+logging.basicConfig()
+log = logging.getLogger()
+log.setLevel(logging.DEBUG)
+
 
 class ContainedMultiSelect(npyscreen.BoxTitle):
     _contained_widget = npyscreen.TitleMultiSelect
@@ -376,34 +399,6 @@ if __name__ == "__main__":
     App.run()
 
 
-
-##!/usr/bin/env python
-#'''
-#Pymodbus Asynchronous Server Example
-#--------------------------------------------------------------------------
-#
-#The asynchronous server is a high performance implementation using the
-#twisted library as its backend.  This allows it to scale to many thousands
-#of nodes which can be helpful for testing monitoring software.
-#'''
-##---------------------------------------------------------------------------# 
-## import the various server implementations
-##---------------------------------------------------------------------------# 
-#from pymodbus.server.async import StartTcpServer
-#from pymodbus.server.async import StartUdpServer
-#from pymodbus.server.async import StartSerialServer
-#
-#from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSparseDataBlock
-#from pymodbus.datastore import ModbusSlaveContext, ModbusServerContext
-#
-##---------------------------------------------------------------------------# 
-## configure the service logging
-##---------------------------------------------------------------------------# 
-#import logging
-#logging.basicConfig()
-#log = logging.getLogger()
-#log.setLevel(logging.DEBUG)
-#
 ##---------------------------------------------------------------------------# 
 ## initialize your data store
 ##---------------------------------------------------------------------------# 
@@ -496,5 +491,3 @@ if __name__ == "__main__":
 ## run the server you want
 ##---------------------------------------------------------------------------# 
 #StartTcpServer(context)
-##StartUdpServer(context)
-##StartSerialServer(context, port='/dev/pts/13')
