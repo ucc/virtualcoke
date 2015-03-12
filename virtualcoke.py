@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# vim: tabstop=4 shiftwidth=4 expandtab ai
+
 import npyscreen
 from datetime import datetime
 
@@ -118,7 +121,7 @@ class VirtualCoke(npyscreen.Form):
 		widget = self.add(npyscreen.FixedText, value=str(button), editable = False, relx = bx, rely = by)
 		self.buttons.append(widget)
 	for button in range(7,10):
-		bx = (8 * 7) + ((button - 6) * 3 ) + 3
+		bx = (8 * 7) + ((button - 6) * 4 ) + 3
 		widget = self.add(npyscreen.FixedText, value=str(button), editable = False, relx = bx, rely = by)
 		self.buttons.append(widget)
 		#
@@ -132,6 +135,27 @@ class VirtualCoke(npyscreen.Form):
 	widget = self.add(npyscreen.FixedText, value="M", editable = False, relx = bx, rely = by)
 	self.buttons.append(widget)
 	#
+	# Slots
+
+	self.slots = []
+	sx = 1
+	sy = by + 1
+	widget = self.add(npyscreen.FixedText, value="Empty?", editable = False, relx = sx, rely = sy)
+	for slot in range(0,7):
+		sx = ((7 * 7) + 3) - ( slot * 7 )
+		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy)
+		#widget = self.add(npyscreen.Checkbox, name="S" , max_width=6, relx = sx, rely = sy, max_height=3, value = ["S"], values = ["S"], scroll_exit=True)
+		# , value_changed_callback=self.parentApp.when_door_toggled)
+		self.slots.append(widget)
+	for slot in range(7,10):
+		sx = (8 * 7) + ((slot - 6) * 4 ) + 3
+		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy)
+		#widget = self.add(npyscreen.FixedText, value="M", editable = False, relx = sx, rely = sy)
+		#widget = self.add(npyscreen.MultiSelect, name="S" , max_width=6, relx = sx, rely = sy, max_height=3, value = ["S"], values = ["S"], scroll_exit=True)
+		self.slots.append(widget)
+
+
+
 	# FIXME Hook up widgets and callbacks
 	#
 
@@ -165,7 +189,7 @@ class VirtualCoke(npyscreen.Form):
 #	self.mode=self.add(CokeButtonPress,name="MODE", relx=50)
 
 	
-	self.date_widget = self.add(npyscreen.FixedText, value=datetime.now().ctime(), editable=False, rely=18)
+	self.date_widget = self.add(npyscreen.FixedText, value=datetime.now().ctime(), editable=False, rely=19)
         self.date_widget.value = "Hello"
 	self.add_handlers({"^Q": self.exit_application})
         
