@@ -80,8 +80,8 @@ class VirtualCoke(npyscreen.Form):
 
     def while_waiting(self):
         self.date_widget.value = datetime.now().ctime()
-	self.sentfield.value = self.parentApp.sent
-	self.receivedfield.value = self.parentApp.received
+	self.statusfield.value = self.parentApp.status
+	self.infofield.value = self.parentApp.received
 #	self.textdisplay.value = self.parentApp.textdisplay
         self.display()
 
@@ -157,8 +157,8 @@ class VirtualCoke(npyscreen.Form):
         self.date_widget.value = "Hello"
 	self.add_handlers({"^Q": self.exit_application})
         
-	self.sentfield = self.add(npyscreen.TitleText, name = "Sent:", value="", editable=False, rely=20 )
-        self.receivedfield = self.add(npyscreen.TitleText, name = "Received:", value="", editable=False )
+	self.statusfield = self.add(npyscreen.TitleText, name = "Status:", value="", editable=False, rely=20 )
+        self.infofield = self.add(npyscreen.TitleText, name = "Info:", value="", editable=False )
 
     def exit_application(self,name):
         self.parentApp.setNextForm(None)
@@ -179,7 +179,7 @@ class VirtualCokeApp(npyscreen.StandardApp):
 
 	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke")
 
-	self.sent=""
+	self.status=""
 	self.received="in onStart"
 
     def while_waiting(self):
@@ -192,9 +192,13 @@ class VirtualCokeApp(npyscreen.StandardApp):
     
     # Coke Emulator comms below
     
-    def do_send(self, data):
+    def do_status(self, data):
 	# socket code was here
-	self.sent = data
+	self.status = data
+
+    def do_info(self, data):
+	# socket code was here
+	self.info = data
 
 
     # Callbacks
@@ -205,19 +209,19 @@ class VirtualCokeApp(npyscreen.StandardApp):
 # See 
 #  https://code.google.com/p/npyscreen/source/detail?r=9768a97fd80ed1e7b3e670f312564c19b1adfef8#
 # for callback info
-        self.do_send(keywords['widget'].name + " " + str(self.F.get_slot_status()))
+        self.do_status(keywords['widget'].name + " " + str(self.F.get_slot_status()))
 	self.F.display()
 
     def when_reset_pressed(self, *args, **keywords):
-        self.do_send('211 keypress\n')
+        self.do_status('211 keypress\n')
         keywords['widget'].value = False
 	self.F.display()
 
     def when_keypad_pressed(self, *args, **keywords):
 	#key = '0'+ keywords['widget'].name
-        #self.do_send('2'+key+' keypress\n')
+        #self.do_status('2'+key+' keypress\n')
         #keywords['widget'].value = False
-        self.do_send(("%c" % args[0]))
+        self.do_status(("%c" % args[0]))
 	self.F.display()
 
     # Coke Emulator code below
