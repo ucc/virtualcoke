@@ -146,10 +146,12 @@ class VirtualCoke(npyscreen.Form):
 		sx = ((7 * 7) + 3) - ( slot * 7 )
 		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy, value_changed_callback=self.parentApp.when_empty_toggled)
 		self.slots.append(widget)
+		self.update_sold(slot, widget.value)
 	for slot in range(7,10):
 		sx = (8 * 7) + ((slot - 6) * 4 ) + 3
 		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy, value_changed_callback=self.parentApp.when_empty_toggled)
 		self.slots.append(widget)
+		self.update_sold(slot, widget.value)
 
 
 	self.date_widget = self.add(npyscreen.FixedText, value=datetime.now().ctime(), editable=False, rely=19)
@@ -169,6 +171,25 @@ class VirtualCoke(npyscreen.Form):
     	    status.append(slot.value)
         return status
 
+    def update_sold(self, slot, value):
+	self.parentApp.do_info("Slot %d toggled" % slot)
+	if value:
+		if slot < 6:
+			self.leds[slot].value = "[SOLD]"
+		# coke slot magic
+		elif self.slots[6].value and \
+			self.slots[7].value and \
+			self.slots[8].value and \
+			self.slots[9].value:
+			self.leds[6].value = "[SOLD]"
+	else:
+		if slot < 6:
+			self.leds[slot].value = "[    ]"
+		else:
+			self.leds[6].value = "[    ]"
+
+
+    
 
 class VirtualCokeApp(npyscreen.StandardApp):
     keypress_timeout_default = 1
@@ -209,6 +230,7 @@ class VirtualCokeApp(npyscreen.StandardApp):
 #  https://code.google.com/p/npyscreen/source/detail?r=9768a97fd80ed1e7b3e670f312564c19b1adfef8#
 # for callback info
         self.do_status(keywords['widget'].name + " " + str(self.F.get_slot_status()))
+	self.F.update_sold(int(keywords['widget'].name), keywords['widget'].value)
 	self.F.display()
 
     def when_reset_pressed(self, *args, **keywords):
