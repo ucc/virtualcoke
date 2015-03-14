@@ -105,11 +105,6 @@ class VirtualCoke(npyscreen.Form):
 		lx = ((7 * 7) + 3) - ( led * 7 )
 		widget = self.add(npyscreen.FixedText, value="[SOLD]", editable = False, relx = lx, rely = ly)
 		self.leds.append(widget)
-		#
-		# FIXME Hook up widgets and callbacks
-		#
-#		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
-#		self.add_handlers({"%d"%keypad: widget.whenPressed})
 		
 	# Buttons
 	self.buttons = []
@@ -204,20 +199,16 @@ class VirtualCokeApp(npyscreen.StandardApp):
 
     def while_waiting(self):
 	pass
-	# socket code was here
 
     def onCleanExit(self):
 	pass
-	# socket code was here
     
     # Coke Emulator comms below
     
     def do_status(self, data):
-	# socket code was here
 	self.status = data
 
     def do_info(self, data):
-	# socket code was here
 	self.info = data
 
 
@@ -239,9 +230,6 @@ class VirtualCokeApp(npyscreen.StandardApp):
 	self.F.display()
 
     def when_keypad_pressed(self, *args, **keywords):
-	#key = '0'+ keywords['widget'].name
-        #self.do_status('2'+key+' keypress\n')
-        #keywords['widget'].value = False
         self.do_status(("%c" % args[0]))
 	self.F.display()
 
