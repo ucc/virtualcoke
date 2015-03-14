@@ -81,8 +81,7 @@ class VirtualCoke(npyscreen.Form):
     def while_waiting(self):
         self.date_widget.value = datetime.now().ctime()
 	self.statusfield.value = self.parentApp.status
-	self.infofield.value = self.parentApp.received
-#	self.textdisplay.value = self.parentApp.textdisplay
+	self.infofield.value = self.parentApp.info
         self.display()
 
     def create(self, *args, **keywords):
@@ -180,7 +179,7 @@ class VirtualCokeApp(npyscreen.StandardApp):
 	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke")
 
 	self.status=""
-	self.received="in onStart"
+	self.info="in onStart"
 
     def while_waiting(self):
 	pass
@@ -305,6 +304,14 @@ class CallbackDataBlock(ModbusSparseDataBlock):
                 return [status]
 
 	log.debug("Dispense Read getValues %d:%d" % (address, count))
+                
+	if address >= ciCoke_DropBitBase + len(slots):
+	        return [0]
+
+	dispensing = address - ciCoke_DropBitBase
+
+        now = datetime.now().ctime()
+	self.app.do_info("At %s, Dispense slot %d ...... bzzzztclunk ..." % (now, dispensing))
 
 	self.toggle = self.toggle+1
 
@@ -317,7 +324,6 @@ class CallbackDataBlock(ModbusSparseDataBlock):
 
 	if self.toggle % 3 == 2:
 		return [0]
-	
 
 	return [1]
 	
