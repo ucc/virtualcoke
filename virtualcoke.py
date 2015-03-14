@@ -197,7 +197,7 @@ class VirtualCokeApp(npyscreen.StandardApp):
     def onStart(self):
 	# initialise virtual coke machine
 
-	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke")
+	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke - ^Q to exit")
 
 	self.status=""
 	self.info="in onStart"
