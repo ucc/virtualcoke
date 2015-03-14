@@ -1,10 +1,11 @@
 TODO items for virtualcoke:
 
-Front panel buttons
-Front panel out of drinks lamps 
-Hidden slot buttons
-Hidden other buttons
-Coin Return Button
+DONE Front panel buttons
+DONE Front panel out of drinks lamps 
+DONE Hidden slot buttons
+DONE Hidden other buttons
+DONE Coin Return Button
+
 Hook up modbus
 Test against dispense
 Write up documentation
