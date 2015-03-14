@@ -356,6 +356,9 @@ if __name__ == "__main__":
     context = modbus_setup(App)
 
     reactor.registerNpyscreenApp(App)
-    StartModbusAsyncServer(context)
+    try:
+    	StartModbusAsyncServer(context)
+    except:
+    	StartModbusAsyncServer(context, address=("", 1502))
     reactor.run()
 

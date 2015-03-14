@@ -4,8 +4,9 @@ DONE Front panel buttons
 DONE Front panel out of drinks lamps 
 DONE Hidden slot buttons
 DONE Hidden other buttons
-DONE Coin Return Button
+DONE Hook up modbus
+DONE Test against dispense
+DONE Modbus alternative port
 
-Hook up modbus
-Test against dispense
-Write up documentation
+     Coin Return Button
+     Write up documentation
