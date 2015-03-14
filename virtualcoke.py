@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# vim: tabstop=4 shiftwidth=4 expandtab ai
+# vim: set tabstop=4 shiftwidth=4 expandtab ai
 
 import npyscreen
 from datetime import datetime
@@ -119,22 +119,24 @@ class VirtualCoke(npyscreen.Form):
 	for button in range(0,7):
 		bx = ((7 * 7) + 3) - ( button * 7 )
 		widget = self.add(npyscreen.FixedText, value=str(button), editable = False, relx = bx, rely = by)
+		self.add_handlers({"%d" % button: self.parentApp.when_keypad_pressed})
 		self.buttons.append(widget)
 	for button in range(7,10):
 		bx = (8 * 7) + ((button - 6) * 4 ) + 3
 		widget = self.add(npyscreen.FixedText, value=str(button), editable = False, relx = bx, rely = by)
+		self.add_handlers({"%d" % button: self.parentApp.when_keypad_pressed})
 		self.buttons.append(widget)
-		#
-		# FIXME Hook up widgets and callbacks
-		#
-#		widget = self.add(CokeButtonPress,name="%d"%keypad, relx = kpx, rely = kpy, when_pressed_callback=self.parentApp.when_keypad_pressed)
-#		self.kpbuttons.append(widget)
-#		self.add_handlers({"%d"%keypad: widget.whenPressed})
-	# Manual
+	
+        # Manual
 	bx = bx + 3
 	widget = self.add(npyscreen.FixedText, value="M", editable = False, relx = bx, rely = by)
+	self.add_handlers({"M": self.parentApp.when_keypad_pressed})
+	self.add_handlers({"m": self.parentApp.when_keypad_pressed})
 	self.buttons.append(widget)
 	#
+
+
+
 	# Slots
 
 	self.slots = []
@@ -143,15 +145,11 @@ class VirtualCoke(npyscreen.Form):
 	widget = self.add(npyscreen.FixedText, value="Empty?", editable = False, relx = sx, rely = sy)
 	for slot in range(0,7):
 		sx = ((7 * 7) + 3) - ( slot * 7 )
-		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy)
-		#widget = self.add(npyscreen.Checkbox, name="S" , max_width=6, relx = sx, rely = sy, max_height=3, value = ["S"], values = ["S"], scroll_exit=True)
-		# , value_changed_callback=self.parentApp.when_door_toggled)
+		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy, value_changed_callback=self.parentApp.when_empty_toggled)
 		self.slots.append(widget)
 	for slot in range(7,10):
 		sx = (8 * 7) + ((slot - 6) * 4 ) + 3
-		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy)
-		#widget = self.add(npyscreen.FixedText, value="M", editable = False, relx = sx, rely = sy)
-		#widget = self.add(npyscreen.MultiSelect, name="S" , max_width=6, relx = sx, rely = sy, max_height=3, value = ["S"], values = ["S"], scroll_exit=True)
+		widget = self.add(npyscreen.CheckboxBare, name=str(slot), relx = sx, rely = sy, value_changed_callback=self.parentApp.when_empty_toggled)
 		self.slots.append(widget)
 
 
@@ -200,6 +198,12 @@ class VirtualCoke(npyscreen.Form):
         self.parentApp.setNextForm(None)
         self.editing = False
 
+    def get_slot_status(self):
+    	status = []
+    	for slot in self.slots:
+    	    status.append(slot.value)
+        return status
+
 
 class VirtualCokeApp(npyscreen.StandardApp):
     keypress_timeout_default = 1
@@ -230,14 +234,12 @@ class VirtualCokeApp(npyscreen.StandardApp):
 
 
     # Callbacks
-    def when_door_toggled(self, *args, **keywords):
+    def when_empty_toggled(self, *args, **keywords):
 # See 
 #  https://code.google.com/p/npyscreen/source/detail?r=9768a97fd80ed1e7b3e670f312564c19b1adfef8#
 # for callback info
-        if keywords['widget'].get_selected_objects():
-            self.do_send('401 door closed\n')
-        else:
-            self.do_send('400 door open\n')
+        self.do_send(keywords['widget'].name + " " + str(self.F.get_slot_status()))
+	self.F.display()
 
     def when_reset_pressed(self, *args, **keywords):
         self.do_send('211 keypress\n')
@@ -245,9 +247,10 @@ class VirtualCokeApp(npyscreen.StandardApp):
 	self.F.display()
 
     def when_keypad_pressed(self, *args, **keywords):
-	key = '0'+ keywords['widget'].name
-        self.do_send('2'+key+' keypress\n')
-        keywords['widget'].value = False
+	#key = '0'+ keywords['widget'].name
+        #self.do_send('2'+key+' keypress\n')
+        #keywords['widget'].value = False
+        self.do_send(("%c" % args[0]))
 	self.F.display()
 
     # Coke Emulator code below
