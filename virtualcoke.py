@@ -37,7 +37,7 @@ import string
 ## configure the service logging
 ##---------------------------------------------------------------------------# 
 import logging
-logging.basicConfig()
+logging.basicConfig(filename="virtualcoke.log", filemode="a+")
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 
@@ -212,8 +212,6 @@ class VirtualCokeApp(npyscreen.StandardApp):
 	# initialise virtual coke machine
 
 	self.F = self.addForm("MAIN", VirtualCoke, name="Virtual Coke")
-	
-	# socket code was here
 
 	self.sent=""
 	self.received="in onStart"
@@ -234,6 +232,9 @@ class VirtualCokeApp(npyscreen.StandardApp):
 
 
     # Callbacks
+    def get_slot_status(self):
+	return self.F.get_slot_status()
+
     def when_empty_toggled(self, *args, **keywords):
 # See 
 #  https://code.google.com/p/npyscreen/source/detail?r=9768a97fd80ed1e7b3e670f312564c19b1adfef8#
@@ -299,10 +300,10 @@ class CallbackDataBlock(ModbusSparseDataBlock):
     processing.
     '''
 
-    def __init__(self, values):
+    def __init__(self, values, app=None):
 	self.toggle = 1
+	self.app = app
 	super(CallbackDataBlock, self).__init__(values)
-
 
     def getValues(self, address, count=1):
         ''' Returns the requested values from the datastore
@@ -311,14 +312,33 @@ class CallbackDataBlock(ModbusSparseDataBlock):
         :param count: The number of values to retrieve
         :returns: The requested values from a:a+c
         '''	
-	log.debug("CBD getValues %d:%d" % (address, count))
+	ciCoke_DropBitBase = 1024 + 1;
+	ciCoke_StatusBitBase = 16 + 1;
 
-	if address < 1024:
-		return [1]
+        # get status of slots from form
+	
+        slots = self.app.get_slot_status()
+
+	#log.debug("CBD getValues %d:%d" % (address, count))
+
+        # check if a status read or a drop read
+	if address < ciCoke_DropBitBase:
+		log.debug("Status Read getValues %d:%d" % (address, count))
+                if address < ciCoke_StatusBitBase or \
+                        address >= ciCoke_StatusBitBase + len(slots):
+		        return [0]
+                # calculate slot
+                reading = address - ciCoke_StatusBitBase
+		# invert 
+		status = not slots[reading]
+
+                return [status]
+
+	log.debug("Dispense Read getValues %d:%d" % (address, count))
 
 	self.toggle = self.toggle+1
 
-	log.debug("CBD getValues toggle %d" % (self.toggle))
+	#log.debug("CBD getValues toggle %d" % (self.toggle))
 	if self.toggle % 3 == 0:
 		return [1]
 	
@@ -333,21 +353,22 @@ class CallbackDataBlock(ModbusSparseDataBlock):
 	
 
 
-store = ModbusSlaveContext(
-    #di = ModbusSequentialDataBlock(0, [17]*100),
-    #co = ModbusSequentialDataBlock(0, [17]*100),
-    #hr = ModbusSequentialDataBlock(0, [17]*100),
-    #ir = ModbusSequentialDataBlock(0, [17]*100))
-    di = CallbackDataBlock([0]*100),
-    co = CallbackDataBlock([0]*65536),
-    hr = CallbackDataBlock([0]*100),
-    ir = CallbackDataBlock([0]*100))
+def modbus_setup(app):
+	store = ModbusSlaveContext(
+	    di = CallbackDataBlock([0]*100, app=app),
+	    co = CallbackDataBlock([0]*65536, app=app), 
+	    hr = CallbackDataBlock([0]*100, app),
+	    ir = CallbackDataBlock([0]*100, app))
 
-context = ModbusServerContext(slaves=store, single=True)
+	context = ModbusServerContext(slaves=store, single=True)
+
+	return context
 
 
 if __name__ == "__main__":
     App = VirtualCokeApp()
+    context = modbus_setup(App)
+
     reactor.registerNpyscreenApp(App)
     StartModbusAsyncServer(context)
     reactor.run()
