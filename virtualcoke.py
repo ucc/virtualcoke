@@ -58,8 +58,8 @@ def StartModbusAsyncServer(context, identity=None, address=None, console=False):
     factory = ModbusServerFactory(context, framer, identity)
     if console: InstallManagementConsole({'factory': factory})
 
-    log.info("Starting Modbus TCP Server on %s:%s" % address)
     reactor.listenTCP(address[1], factory, interface=address[0])
+    log.info("Starting Modbus TCP Server on %s:%s" % address)
 
 
 #
