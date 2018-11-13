@@ -1,0 +1,5 @@
+twisted
+pymodbus
+pyasn1
+npyscreenreactor
+cryptography
